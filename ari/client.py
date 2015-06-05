@@ -7,7 +7,7 @@
 
 import json
 import logging
-import urlparse
+import six.moves.urllib as urllib
 import swaggerpy.client
 
 from ari.model import *
@@ -23,7 +23,7 @@ class Client(object):
     """
 
     def __init__(self, base_url, http_client):
-        url = urlparse.urljoin(base_url, "ari/api-docs/resources.json")
+        url = urllib.parse.urljoin(base_url, "ari/api-docs/resources.json")
 
         self.swagger = swaggerpy.client.SwaggerClient(
             url, http_client=http_client)
@@ -192,7 +192,7 @@ class Client(object):
             # If there's only one field in the schema, just pass that along
             if len(obj_fields) == 1:
                 if obj:
-                    obj = obj.values()[0]
+                    obj = list(obj.values())[0]
                 else:
                     obj = None
             event_cb(obj, event, *args, **kwargs)
@@ -296,4 +296,3 @@ class Client(object):
         """
         return self.on_object_event(event_type, fn, Sound, 'Sound',
                                     *args, **kwargs)
-
